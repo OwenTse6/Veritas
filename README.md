@@ -1,17 +1,42 @@
 # slopcheck
 
-A heuristic, **explainable** AI-generated content detector for text and images.
+A heuristic, **explainable** AI-generated content detector for text and images —
+plus a separate, complementary trained-model detector for cases the
+heuristics can't reach (see below).
 
-No black-box classifiers, no opaque "94% AI" percentage with nothing behind it.
-Every score comes from named, inspectable statistical signals — you can always
-see exactly *why* something was flagged, and exactly how confident you should be.
+**Two genuinely different approaches live in this repo, and it matters
+which one you're using:**
+
+- **`core/` — no black-box classifiers.** Every score comes from named,
+  inspectable statistical signals (noise floor, burstiness, chromatic
+  aberration, etc.) — you can always see exactly *why* something was
+  flagged and exactly how confident you should be. This is the original
+  engine and the project's main differentiator from typical AI detectors.
+- **`ml/` — a trained neural network,** built deliberately once we proved
+  (see `LIMITATIONS.md`) that some problems -- distinguishing AI-generated
+  art from human-made art, in particular -- are fundamentally unsolvable
+  by pixel statistics alone, no matter how many heuristics you throw at
+  them. This is explicitly a black-box classifier (with partial
+  Grad-CAM-based explainability layered on top, not the same kind of
+  transparency as `core/`). See `ml/README.md` for the full rationale.
+
+If you want the "no black box" guarantee, use `core/` -- `cli.py`'s
+`text`/`image`/`batch` commands only ever call into it. If you want the
+higher accuracy the trained models achieved (particularly for AI-art
+detection, where they succeeded and the heuristics didn't), use `ml/`,
+understanding you're trading transparency for performance.
 
 ## Why this exists
 
 Most AI-content detectors are black boxes: you get a confidence percentage
-and no way to check its reasoning. slopcheck takes the opposite approach —
+and no way to check its reasoning. `core/` takes the opposite approach —
 transparent, individually-tunable signals, combined with a documented,
 principled method, and an honest account of what it can and can't do.
+`ml/` exists alongside it as an honest acknowledgment that this approach
+has real, documented limits (see `LIMITATIONS.md`) -- rather than
+overclaiming that heuristics solved everything, the project's own testing
+is what led to bringing in a different kind of tool for the parts they
+couldn't reach.
 
 ## What it actually detects (validated)
 
@@ -34,19 +59,27 @@ principled method, and an honest account of what it can and can't do.
   noise-consistency checks. Works for some compositing workflows, not all
   (see Limitations).
 
-## What it does NOT detect (and why)
+## What `core/` (the heuristic engine) does NOT detect, and why
 
 **Distinguishing AI-generated art from human-made digital art/illustration.**
-We tried this seriously — twice, with real test samples, not just theory —
-and both attempts failed the moment a stylized AI illustration was involved,
-because modern generators are trained on exactly the art styles they're
-being compared against and reproduce their statistical signature
-convincingly. Every signal in this tool measures physical/statistical
-properties (camera noise, lens optics, compression history) — none of them
-can tell *who* made a piece of art, only *how* it was rendered. Reliably
-telling AI art from human art would require semantic/stylistic pattern
-recognition — which means a trained model, the exact thing this project
-is an alternative to.
+We tried this seriously with pure heuristics — twice, with real test
+samples, not just theory — and both attempts failed the moment a stylized
+AI illustration was involved, because modern generators are trained on
+exactly the art styles they're being compared against and reproduce their
+statistical signature convincingly. Every heuristic signal in this tool
+measures physical/statistical properties (camera noise, lens optics,
+compression history) — none of them can tell *who* made a piece of art,
+only *how* it was rendered.
+
+**This conclusion about heuristics turned out to be correct, and also not
+the end of the story.** A model trained specifically on this task (in
+`ml/`, using the AI-ArtBench dataset) succeeded where the heuristics
+couldn't — correctly classifying 7 of 8 known-hard art samples that had
+defeated every prior attempt. See `LIMITATIONS.md` section 4b for the
+full result. The honest lesson: "this can't be solved" and "this can't
+be solved by *this kind* of tool" are different claims, and it's worth
+knowing which one you've actually proven before concluding a problem is
+unsolvable.
 
 Full writeup of this and other findings in [`LIMITATIONS.md`](LIMITATIONS.md).
 
