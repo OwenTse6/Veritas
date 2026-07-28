@@ -1,0 +1,46 @@
+# Datasets -- never commit these, they're huge and often licensed for
+# non-commercial/research use only, not redistribution
+ml/data/
+ml/data_artbench/
+ml/ai_artbench_raw/
+ml/cifake_raw/
+ml/*.zip
+
+# Trained model checkpoints -- large binaries, don't belong in git history
+ml/checkpoints/
+ml/checkpoints_*/
+*.pt
+*.pth
+
+# Calibration images -- excluded entirely, not just the ones Claude
+# happened to receive copies of. Real-world calibration data tends to
+# include stock photography, product photos, and fan/official art with
+# licensing that doesn't permit redistribution, and potentially photos
+# with identifiable people who never consented to being in a public
+# dataset. See calibration_set/images/README.md for how to build your
+# own local set with the same folder structure.
+calibration_set/images/*/*.jpg
+calibration_set/images/*/*.jpeg
+calibration_set/images/*/*.png
+calibration_set/images/*/*.webp
+calibration_set/images/*/*.bmp
+
+# Kaggle credentials -- must never be committed
+kaggle.json
+.kaggle/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+venv/
+env/
+.venv/
+
+# OS/editor cruft
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+calibration_set/images/*/*.avif

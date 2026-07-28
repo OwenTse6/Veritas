@@ -1,0 +1,3 @@
+so the check engine light came on again after I replaced the O2 sensor. pulled the code and it's a different one this time (P0171, lean fuel mixture) so at least it's not the same issue coming back. probably a vacuum leak somewhere, going to check the intake hoses tomorrow when I have more daylight.
+
+anyone dealt with this on a 2011 civic before? googling it gives me like 15 different possible causes which isn't super helpful lol

@@ -1,0 +1,7 @@
+numpy
+scipy
+Pillow
+click
+fastapi
+uvicorn
+python-multipart
