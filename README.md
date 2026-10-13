@@ -1,4 +1,4 @@
-# AI Content Checker
+# Veritas
 
 A heuristic, **explainable** AI-generated content detector for text and images —
 plus a separate, complementary trained-model detector for cases the
